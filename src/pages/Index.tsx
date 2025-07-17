@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AskQuestionModal } from "@/components/AskQuestionModal";
+import { ConsultationModal } from "@/components/ConsultationModal";
 import { 
   Globe, 
   Database, 
@@ -34,6 +35,7 @@ import portfolio6 from "@/assets/portfolio-6.jpg";
 const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
+  const [showConsultationModal, setShowConsultationModal] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,6 +53,15 @@ const Index = () => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Show consultation modal after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowConsultationModal(true);
+    }, 5000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const scrollToSection = (sectionId: string) => {
@@ -549,6 +560,12 @@ const Index = () => {
           </div>
         </div>
       </footer>
+
+      {/* Consultation Modal */}
+      <ConsultationModal 
+        isOpen={showConsultationModal} 
+        onClose={() => setShowConsultationModal(false)} 
+      />
     </div>
   );
 };
