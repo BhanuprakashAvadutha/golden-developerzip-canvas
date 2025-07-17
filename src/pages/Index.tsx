@@ -4,6 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AskQuestionModal } from "@/components/AskQuestionModal";
 import { ConsultationModal } from "@/components/ConsultationModal";
+import OfferModal from "@/components/OfferModal";
+import AIChatbot from "@/components/AIChatbot";
 import { 
   Globe, 
   Database, 
@@ -36,6 +38,7 @@ const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [showConsultationModal, setShowConsultationModal] = useState(false);
+  const [showOfferModal, setShowOfferModal] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,6 +63,15 @@ const Index = () => {
     const timer = setTimeout(() => {
       setShowConsultationModal(true);
     }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Show offer modal after 7 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowOfferModal(true);
+    }, 7000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -566,6 +578,15 @@ const Index = () => {
         isOpen={showConsultationModal} 
         onClose={() => setShowConsultationModal(false)} 
       />
+
+      {/* Offer Modal */}
+      <OfferModal 
+        isOpen={showOfferModal} 
+        onClose={() => setShowOfferModal(false)} 
+      />
+
+      {/* AI Chatbot */}
+      <AIChatbot />
     </div>
   );
 };
