@@ -187,14 +187,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* GamePro Banner */}
-      <div className="fixed top-4 right-4 z-[60]">
-        <a href="https://gamepro.com" target="_blank" rel="noopener noreferrer" className="block">
-          <div className="bg-primary text-primary-foreground px-4 py-2 rounded-md shadow-lg hover:opacity-90 transition-opacity duration-300 font-semibold text-sm">
-            🎮 Game Pro Banner
-          </div>
-        </a>
-      </div>
 
       {/* Sticky Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
