@@ -591,10 +591,11 @@ const Index = () => {
       />
 
       {/* Offer Modal */}
-      <OfferModal 
-        isOpen={showOfferModal} 
-        onClose={() => setShowOfferModal(false)} 
-      />
+        <OfferModal 
+          isOpen={showOfferModal} 
+          onClose={() => setShowOfferModal(false)}
+          consultationModalOpen={showConsultationModal}
+        />
 
       {/* AI Chatbot */}
       <AIChatbot />
