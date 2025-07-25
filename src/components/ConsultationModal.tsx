@@ -40,15 +40,7 @@ export const ConsultationModal: React.FC<ConsultationModalProps> = ({ isOpen, on
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="bg-background border-accent/20 max-w-md mx-auto">
-        <DialogHeader className="relative">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute -top-2 -right-2 text-muted-foreground hover:text-foreground"
-            onClick={onClose}
-          >
-            <X className="h-4 w-4" />
-          </Button>
+        <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-foreground mb-2">
             Get Your Free Consultation
           </DialogTitle>
