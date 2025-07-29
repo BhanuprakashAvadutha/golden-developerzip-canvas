@@ -39,6 +39,7 @@ const Index = () => {
   const [activeSection, setActiveSection] = useState("home");
   const [showConsultationModal, setShowConsultationModal] = useState(false);
   const [showOfferModal, setShowOfferModal] = useState(false);
+  const [offerShown, setOfferShown] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,17 +68,18 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Show offer modal on scroll
+  // Show offer modal on scroll (only once)
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 200 && !showOfferModal) {
+      if (window.scrollY > 200 && !showOfferModal && !offerShown) {
         setShowOfferModal(true);
+        setOfferShown(true);
       }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [showOfferModal]);
+  }, [showOfferModal, offerShown]);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
