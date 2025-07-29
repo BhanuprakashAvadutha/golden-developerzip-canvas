@@ -33,6 +33,7 @@ import portfolio3 from "@/assets/portfolio-3.jpg";
 import portfolio4 from "@/assets/portfolio-4.jpg";
 import portfolio5 from "@/assets/portfolio-5.jpg";
 import portfolio6 from "@/assets/portfolio-6.jpg";
+import heartwarmingScene from "@/assets/heartwarming-scene.jpg";
 
 const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -349,6 +350,18 @@ const Index = () => {
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               From concept to completion, we deliver exceptional digital solutions that drive results.
             </p>
+          </div>
+
+          {/* Heartwarming Scene */}
+          <div className="flex justify-center mb-12 animate-fade-in">
+            <div className="relative max-w-2xl mx-auto">
+              <img
+                src={heartwarmingScene}
+                alt="Lovable heartwarming scene with cute character"
+                className="w-full h-auto rounded-2xl shadow-premium animate-float"
+              />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-primary/10 to-transparent pointer-events-none" />
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
