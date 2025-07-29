@@ -138,8 +138,7 @@ const Index = () => {
   const pricingPlans = [
     {
       name: "Starter",
-      price: "₹999",
-      usdPrice: "$12",
+      price: "$20",
       description: "Perfect for small projects and getting started",
       features: [
         "Basic landing page",
@@ -152,8 +151,7 @@ const Index = () => {
     },
     {
       name: "Pro",
-      price: "₹1,999",
-      usdPrice: "$25",
+      price: "$40",
       description: "Advanced features for growing businesses",
       features: [
         "Advanced landing page",
@@ -167,8 +165,7 @@ const Index = () => {
     },
     {
       name: "Agency",
-      price: "₹3,499",
-      usdPrice: "$45",
+      price: "$80",
       description: "Complete solution for agencies and enterprises",
       features: [
         "Multi-page website",
@@ -521,7 +518,6 @@ const Index = () => {
                     <h3 className="text-2xl font-bold text-foreground mb-2">{plan.name}</h3>
                     <div className="flex items-baseline justify-center gap-2 mb-2">
                       <span className="text-3xl font-bold text-primary">{plan.price}</span>
-                      <span className="text-lg text-muted-foreground">/ {plan.usdPrice}</span>
                     </div>
                     <p className="text-sm text-muted-foreground">{plan.description}</p>
                   </div>

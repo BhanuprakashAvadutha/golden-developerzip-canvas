@@ -18,7 +18,7 @@ const AIChatbot: React.FC = () => {
   const [isTyping, setIsTyping] = useState(false);
 
   const predefinedResponses = {
-    'pricing': "Our pricing starts from ₹999 for Starter, ₹1,999 for Pro, and ₹3,499 for Agency plans. Each includes different features and support levels.",
+    'pricing': "Our pricing starts from $20 for Starter, $40 for Pro, and $80 for Agency plans. Each includes different features and support levels.",
     'services': "We offer Web Landing Pages, Firebase Integration, Email & WhatsApp Automation, Freelance Profile Setup, AI Chat Assistants, and Analytics Dashboards.",
     'contact': "You can reach us through the contact form, email, or WhatsApp. We typically respond within 24 hours.",
     'portfolio': "Check out our portfolio section to see examples of our work including landing pages, automation systems, and AI implementations.",
