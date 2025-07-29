@@ -85,7 +85,7 @@ const AIChatbot: React.FC = () => {
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           onClick={() => setIsOpen(true)}
-          className="bg-accent hover:bg-accent-light text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 animate-pulse"
+          className="bg-accent hover:bg-accent-light text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 animate-slow-blink"
         >
           <MessageCircle className="w-6 h-6" />
         </Button>
