@@ -67,14 +67,17 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Show offer modal after 7 seconds
+  // Show offer modal on scroll
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowOfferModal(true);
-    }, 7000);
+    const handleScroll = () => {
+      if (window.scrollY > 200 && !showOfferModal) {
+        setShowOfferModal(true);
+      }
+    };
 
-    return () => clearTimeout(timer);
-  }, []);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [showOfferModal]);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
