@@ -129,8 +129,10 @@ export default {
 					'50%': { transform: 'translateY(-10px)' }
 				},
 				'slow-blink': {
-					'0%, 100%': { opacity: '1' },
-					'50%': { opacity: '0.3' }
+					'0%, 90%': { opacity: '1' },
+					'5%': { opacity: '0.3' },
+					'10%': { opacity: '1' },
+					'100%': { opacity: '1' }
 				}
 			},
 			animation: {
@@ -143,7 +145,7 @@ export default {
 				'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
 				'sparkle': 'sparkle 3s ease-in-out infinite',
 				'float': 'float 6s ease-in-out infinite',
-				'slow-blink': 'slow-blink 3s ease-in-out infinite'
+				'slow-blink': 'slow-blink 1s ease-in-out infinite'
 			}
 		}
 	},
