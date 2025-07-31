@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { AskQuestionModal } from "@/components/AskQuestionModal";
-import { ConsultationModal } from "@/components/ConsultationModal";
-import OfferModal from "@/components/OfferModal";
-import AIChatbot from "@/components/AIChatbot";
-import AboutUs from "@/components/AboutUs";
-import ContactForm from "@/components/ContactForm";
+import { Button } from "@/components/ui/button"; // Reverted path
+import { Card, CardContent } from "@/components/ui/card"; // Reverted path
+import { Badge } from "@/components/ui/badge"; // Reverted path
+import { AskQuestionModal } from "@/components/AskQuestionModal"; // Reverted path
+import { ConsultationModal } from "@/components/ConsultationModal"; // Reverted path
+import OfferModal from "@/components/OfferModal"; // Reverted path
+import AIChatbot from "@/components/AIChatbot"; // Reverted path
 import { 
   Globe, 
   Database, 
@@ -25,19 +23,22 @@ import {
   Code,
   Users,
   TrendingUp,
-  ChevronDown,
-  MapPin,
-  Phone
+  ChevronDown
 } from "lucide-react";
 
-// Import portfolio images
+// Import Firebase modules
+import { initializeApp, getApps, getApp } from 'firebase/app'; // Added getApps, getApp
+import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+
+// Import portfolio images (Reverted paths)
 import portfolio1 from "@/assets/portfolio-1.jpg";
 import portfolio2 from "@/assets/portfolio-2.jpg";
 import portfolio3 from "@/assets/portfolio-3.jpg";
 import portfolio4 from "@/assets/portfolio-4.jpg";
 import portfolio5 from "@/assets/portfolio-5.jpg";
 import portfolio6 from "@/assets/portfolio-6.jpg";
-import heartwarmingScene from "@/assets/heartwarming-scene.jpg";
+import banner from "@/assets/banner.png";
 
 const Index = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -45,10 +46,90 @@ const Index = () => {
   const [showConsultationModal, setShowConsultationModal] = useState(false);
   const [showOfferModal, setShowOfferModal] = useState(false);
   const [offerShown, setOfferShown] = useState(false);
+  const [email, setEmail] = useState(""); // State for email input
+  const [db, setDb] = useState<any>(null); // Firestore instance
+  const [auth, setAuth] = useState<any>(null); // Auth instance
+  const [userId, setUserId] = useState<string | null>(null); // User ID for Firestore
+
+  // SEO: Set page title, meta description, Open Graph, and Twitter Card tags dynamically
+  useEffect(() => {
+    const siteTitle = "DeveloperZip - Ask. Build. Automate. Your Digital Solutions Partner";
+    const siteDescription = "DeveloperZip offers premium web development, automation, and AI solutions. Get stunning landing pages, seamless integrations, and intelligent chatbots. Built by Interns, powered by DeveloperZip.";
+    const previewImageUrl = "https://placehold.co/1200x630/000000/FFFFFF?text=DeveloperZip%20Preview"; // Placeholder image URL
+    const twitterHandle = "@DeveloperZip"; // Replace with your actual Twitter handle
+
+    document.title = siteTitle;
+
+    const updateOrCreateMeta = (name: string, content: string, property?: string) => {
+      let element = document.querySelector(`meta[name="${name}"]`) || document.querySelector(`meta[property="${property}"]`);
+      if (!element) {
+        element = document.createElement('meta');
+        if (name) element.setAttribute('name', name);
+        if (property) element.setAttribute('property', property);
+        document.head.appendChild(element);
+      }
+      element.setAttribute('content', content);
+    };
+
+    updateOrCreateMeta('description', siteDescription);
+
+    // Open Graph Tags
+    updateOrCreateMeta('', siteTitle, 'og:title');
+    updateOrCreateMeta('', siteDescription, 'og:description');
+    updateOrCreateMeta('', 'website', 'og:type');
+    updateOrCreateMeta('', previewImageUrl, 'og:image');
+
+    // Twitter Card Tags
+    updateOrCreateMeta('twitter:card', 'summary_large_image');
+    updateOrCreateMeta('twitter:site', twitterHandle);
+    updateOrCreateMeta('twitter:image', previewImageUrl);
+
+  }, []);
+
+  // Initialize Firebase and set up auth listener
+  useEffect(() => {
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+    let app;
+    // Check if a Firebase app already exists to prevent re-initialization errors
+    if (!getApps().length) {
+      app = initializeApp(firebaseConfig);
+    } else {
+      app = getApp(); // Use the existing app
+    }
+    
+    const firestoreDb = getFirestore(app);
+    const firebaseAuth = getAuth(app);
+
+    setDb(firestoreDb);
+    setAuth(firebaseAuth);
+
+    const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
+      if (user) {
+        setUserId(user.uid);
+      } else {
+        // Sign in anonymously if no user is authenticated
+        try {
+          if (typeof __initial_auth_token !== 'undefined') {
+            await signInWithCustomToken(firebaseAuth, __initial_auth_token);
+          } else {
+            await signInAnonymously(firebaseAuth);
+          }
+        } catch (error) {
+          console.error("Firebase authentication error:", error);
+          setUserId(crypto.randomUUID()); // Fallback to a random ID if auth fails
+        }
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup auth listener on component unmount
+  }, []);
+
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["home", "about", "services", "platforms", "portfolio", "pricing", "contact"];
+      const sections = ["home", "services", "platforms", "portfolio", "pricing"];
       const current = sections.find(section => {
         const element = document.getElementById(section);
         if (element) {
@@ -73,9 +154,9 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Show offer modal on scroll (only once)
+   // Show offer modal on scroll (only once)
   useEffect(() => {
-    const handleScroll = () => {
+     const handleScroll = () => {
       if (window.scrollY > 200 && !showOfferModal && !offerShown) {
         setShowOfferModal(true);
         setOfferShown(true);
@@ -94,6 +175,37 @@ const Index = () => {
     setIsMenuOpen(false);
   };
 
+  // Function to handle email submission and store in Firestore
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!db || !userId) {
+      console.error("Firestore or User ID not initialized.");
+      // Using a custom modal for user feedback instead of alert
+      alert("Error: Database not ready. Please try again.");
+      return;
+    }
+
+    try {
+      const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+      const newsletterCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/newsletter_subscribers`);
+      
+      await addDoc(newsletterCollectionRef, {
+        email: email,
+        timestamp: new Date(),
+        userId: userId // Store userId with the email
+      });
+      console.log("Email subscribed successfully:", email);
+      // Using a custom modal for user feedback instead of alert
+      alert(`Thank you for subscribing, ${email}!`);
+      setEmail(""); // Clear the input field
+    } catch (error) {
+      console.error("Error subscribing email:", error);
+      // Using a custom modal for user feedback instead of alert
+      alert("Failed to subscribe. Please try again.");
+    }
+  };
+
   const services = [
     {
       icon: Globe,
@@ -102,7 +214,7 @@ const Index = () => {
     },
     {
       icon: Database,
-      title: "Firebase Integration",
+      title: "Storage Integration",
       description: "Seamless form handling, real-time databases, and cloud storage solutions."
     },
     {
@@ -143,43 +255,46 @@ const Index = () => {
   const pricingPlans = [
     {
       name: "Starter",
-      price: "$20",
+      usdPrice: "$20",
       description: "Perfect for small projects and getting started",
       features: [
-        "Basic landing page",
-        "Contact form integration",
-        "Mobile responsive design",
-        "Basic SEO optimization",
-        "48-hour delivery"
+        "Single-page landing (up to 5 sections)",
+        "Simple contact form (Email only)",
+        "Mobile + Tablet responsive",
+        "Basic SEO (title, meta description only)",
+        "Delivery in 48 hours (1 revision included)",
+        "One-time payment, no recurring fee"
       ],
       popular: false
     },
     {
       name: "Pro",
-      price: "$40",
+      usdPrice: "$40",
       description: "Advanced features for growing businesses",
       features: [
-        "Advanced landing page",
-        "Firebase backend integration",
-        "Email automation setup",
-        "Analytics dashboard",
-        "24-hour delivery",
-        "1 month support"
+        "Advanced landing (up to 7 sections, animations)",
+        "Firebase backend (auth + Firestore setup)",
+        "Email automation (via Gmail or SMTP)",
+        "Analytics dashboard (basic metrics)",
+        "Delivery in 24 hours (2 revisions)",
+        "1 month chat/email support (Mon–Sat)",
+        "All inclusive. No hidden fees"
       ],
       popular: true
     },
     {
       name: "Agency",
-      price: "$80",
+      usdPrice: "$80",
       description: "Complete solution for agencies and enterprises",
       features: [
-        "Multi-page website",
-        "Full automation suite",
-        "AI chat integration",
-        "Custom analytics",
-        "WhatsApp integration",
-        "3 months support",
-        "Priority delivery"
+        "Multi-page website (up to 5 pages)",
+        "Full automation (email + WhatsApp)",
+        "AI chatbot (OpenAI or Gemini based, 1 bot)",
+        "Custom analytics (Google Analytics + custom KPIs)",
+        "WhatsApp integration (1 number, Twilio setup)",
+        "Priority delivery (under 48 hrs), 3 revisions",
+        "3-month support (Mon–Sat)",
+        "Fixed pricing. All integrations included."
       ],
       popular: false
     }
@@ -187,7 +302,7 @@ const Index = () => {
 
   const automationSteps = [
     { step: 1, title: "Form Submission", description: "User submits form on your website" },
-    { step: 2, title: "Firebase Storage", description: "Data securely stored in real-time database" },
+    { step: 2, title: "Storage", description: "Data securely stored in real-time database" },
     { step: 3, title: "Email Sent", description: "Automated email notifications triggered" },
     { step: 4, title: "WhatsApp Trigger", description: "Instant WhatsApp messages delivered" }
   ];
@@ -223,7 +338,6 @@ const Index = () => {
             <div className="hidden md:flex items-center space-x-8">
               {[
                 { name: "Home", id: "home" },
-                { name: "About", id: "about" },
                 { name: "Services", id: "services" },
                 { name: "Ask", id: "ask" },
                 { name: "Platforms", id: "platforms" },
@@ -250,6 +364,7 @@ const Index = () => {
                   }`} />
                 </button>
               ))}
+              {/* Removed "Get a Free Consultation" button from the header */}
             </div>
 
             {/* Mobile Menu Button */}
@@ -270,7 +385,6 @@ const Index = () => {
               <div className="px-2 pt-2 pb-3 space-y-1">
                 {[
                   { name: "Home", id: "home" },
-                  { name: "About", id: "about" },
                   { name: "Services", id: "services" },
                   { name: "Ask", id: "ask" },
                   { name: "Platforms", id: "platforms" },
@@ -292,6 +406,7 @@ const Index = () => {
                     )}
                   </button>
                 ))}
+                {/* Removed "Get a Free Consultation" button from the mobile menu */}
               </div>
             </div>
           )}
@@ -328,6 +443,14 @@ const Index = () => {
                     <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                   </Button>
                 </AskQuestionModal>
+                {/* Added "Get a Free Consultation" button back to the hero section */}
+                <Button 
+                  variant="premium-outline" 
+                  size="lg"
+                  onClick={() => setShowConsultationModal(true)} 
+                >
+                  Get a Free Consultation
+                </Button>
                 <Button 
                   variant="premium-outline" 
                   size="lg"
@@ -346,9 +469,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* About Us Section */}
-      <AboutUs />
-
       {/* Services Section */}
       <section id="services" className="py-20 bg-card/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -359,18 +479,6 @@ const Index = () => {
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               From concept to completion, we deliver exceptional digital solutions that drive results.
             </p>
-          </div>
-
-          {/* Heartwarming Scene */}
-          <div className="flex justify-center mb-12 animate-fade-in">
-            <div className="relative max-w-2xl mx-auto">
-              <img
-                src={heartwarmingScene}
-                alt="Lovable heartwarming scene with cute character"
-                className="w-full h-auto rounded-2xl shadow-premium animate-float"
-              />
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-t from-primary/10 to-transparent pointer-events-none" />
-            </div>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -539,7 +647,8 @@ const Index = () => {
                   <div className="text-center mb-6">
                     <h3 className="text-2xl font-bold text-foreground mb-2">{plan.name}</h3>
                     <div className="flex items-baseline justify-center gap-2 mb-2">
-                      <span className="text-3xl font-bold text-primary">{plan.price}</span>
+                      
+                      <span className="text-lg text-muted-foreground">/ {plan.usdPrice}</span>
                     </div>
                     <p className="text-sm text-muted-foreground">{plan.description}</p>
                   </div>
@@ -547,6 +656,7 @@ const Index = () => {
                   <ul className="space-y-3 mb-6">
                     {plan.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-center gap-3">
+                        {/* Using a simple checkmark emoji for now, consider a Lucide icon if preferred */}
                         <Check className="h-4 w-4 text-primary flex-shrink-0" />
                         <span className="text-sm text-foreground">{feature}</span>
                       </li>
@@ -569,76 +679,82 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Contact Form Section */}
-      <ContactForm />
-
       {/* Footer */}
-      <footer className="bg-background border-t border-border py-12">
+      <footer id="contact" className="bg-background border-t border-border py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Company Info */}
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="h-8 w-8 bg-gradient-gold rounded-lg flex items-center justify-center">
-                  <Zap className="h-5 w-5 text-charcoal" />
-                </div>
-                <span className="text-xl font-display font-bold text-foreground">
-                  DeveloperZip
-                </span>
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <div className="h-8 w-8 bg-gradient-gold rounded-lg flex items-center justify-center">
+                <Zap className="h-5 w-5 text-charcoal" />
               </div>
-              <p className="text-muted-foreground mb-4 text-sm">
-                Creative web development agency specializing in modern, responsive websites and intuitive user experiences.
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Built by Interns. Powered by DeveloperZip.
-              </p>
+              <span className="text-2xl font-display font-bold text-foreground">
+                DeveloperZip
+              </span>
+            </div>
+            <p className="text-muted-foreground mb-6">
+              Built by Interns. Powered by DeveloperZip.
+            </p>
+            
+            {/* Email Capture / Newsletter Signup */}
+            <form onSubmit={handleNewsletterSubmit} className="max-w-md mx-auto mb-8">
+              <p className="text-lg text-foreground mb-4">Stay updated with our latest offers and news!</p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  className="flex-grow p-3 rounded-lg bg-card border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <Button type="submit" variant="premium" className="w-full sm:w-auto">
+                  Subscribe
+                </Button>
+              </div>
+            </form>
+
+            <div className="flex justify-center gap-6 mb-6">
+              {[
+                { icon: Users, label: "Community" },
+                { icon: MessageSquare, label: "Support" },
+                { icon: Mail, label: "Contact" }
+              ].map((social, index) => (
+                <button
+                  key={social.label}
+                  className="p-3 rounded-lg bg-card hover:bg-primary/10 transition-colors group"
+                >
+                  <social.icon className="h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
+                </button>
+              ))}
+            </div>
+            
+            <div className="pt-6 border-t border-border text-sm text-muted-foreground">
+              © 2024 DeveloperZip. All rights reserved. Built with ❤️ and ⚡
             </div>
 
-            {/* Contact Info */}
-            <div>
-              <h4 className="font-semibold text-foreground mb-4">Contact Information</h4>
-              <div className="space-y-3 text-sm">
-                <div className="flex items-start gap-2">
-                  <MapPin className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-muted-foreground">123 Tech Street, Srikakulam, Andhra Pradesh, India</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span className="text-muted-foreground">+91-9876543210</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-primary flex-shrink-0" />
-                  <span className="text-muted-foreground">support@developerzip.com</span>
-                </div>
-              </div>
+            {/* Legal Pages Navigation */}
+            <div className="flex justify-center gap-4 mt-6 text-sm">
+              <a 
+                href="/PrivacyPolicy" 
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                Privacy Policy
+              </a>
+              <span className="text-muted-foreground">|</span>
+              <a 
+                href="/TermsAndConditions" 
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                Terms & Conditions
+              </a>
+              <span className="text-muted-foreground">|</span>
+              <a 
+                href="/Disclaimer" 
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                Disclaimer
+              </a>
             </div>
-
-            {/* Quick Links */}
-            <div>
-              <h4 className="font-semibold text-foreground mb-4">Quick Links</h4>
-              <div className="grid grid-cols-2 gap-2 text-sm">
-                {[
-                  { name: "About", id: "about" },
-                  { name: "Services", id: "services" },
-                  { name: "Portfolio", id: "portfolio" },
-                  { name: "Pricing", id: "pricing" },
-                  { name: "Contact", id: "contact" },
-                  { name: "Home", id: "home" }
-                ].map((link) => (
-                  <button
-                    key={link.id}
-                    onClick={() => scrollToSection(link.id)}
-                    className="text-left text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-8 pt-6 border-t border-border text-center text-sm text-muted-foreground">
-            © 2024 DeveloperZip. All rights reserved. Built with ❤️ and ⚡
           </div>
         </div>
       </footer>
@@ -650,11 +766,10 @@ const Index = () => {
       />
 
       {/* Offer Modal */}
-        <OfferModal 
-          isOpen={showOfferModal} 
-          onClose={() => setShowOfferModal(false)}
-          consultationModalOpen={showConsultationModal}
-        />
+      <OfferModal 
+        isOpen={showOfferModal} 
+        onClose={() => setShowOfferModal(false)} 
+      />
 
       {/* AI Chatbot */}
       <AIChatbot />
