@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button"; // Reverted path
-import { Card, CardContent } from "@/components/ui/card"; // Reverted path
-import { Badge } from "@/components/ui/badge"; // Reverted path
-import { AskQuestionModal } from "@/components/AskQuestionModal"; // Reverted path
-import { ConsultationModal } from "@/components/ConsultationModal"; // Reverted path
-import OfferModal from "@/components/OfferModal"; // Reverted path
-import AIChatbot from "@/components/AIChatbot"; // Reverted path
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { AskQuestionModal } from "@/components/AskQuestionModal";
+import { ConsultationModal } from "@/components/ConsultationModal";
+import OfferModal from "@/components/OfferModal";
+import AIChatbot from "@/components/AIChatbot";
 import { 
   Globe, 
   Database, 
@@ -26,12 +26,7 @@ import {
   ChevronDown
 } from "lucide-react";
 
-// Import Firebase modules
-import { initializeApp, getApps, getApp } from 'firebase/app'; // Added getApps, getApp
-import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
-
-// Import portfolio images (Reverted paths)
+// Import portfolio images
 import portfolio1 from "@/assets/portfolio-1.jpg";
 import portfolio2 from "@/assets/portfolio-2.jpg";
 import portfolio3 from "@/assets/portfolio-3.jpg";
@@ -47,9 +42,6 @@ const Index = () => {
   const [showOfferModal, setShowOfferModal] = useState(false);
   const [offerShown, setOfferShown] = useState(false);
   const [email, setEmail] = useState(""); // State for email input
-  const [db, setDb] = useState<any>(null); // Firestore instance
-  const [auth, setAuth] = useState<any>(null); // Auth instance
-  const [userId, setUserId] = useState<string | null>(null); // User ID for Firestore
 
   // SEO: Set page title, meta description, Open Graph, and Twitter Card tags dynamically
   useEffect(() => {
@@ -85,47 +77,6 @@ const Index = () => {
     updateOrCreateMeta('twitter:image', previewImageUrl);
 
   }, []);
-
-  // Initialize Firebase and set up auth listener
-  useEffect(() => {
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-
-    let app;
-    // Check if a Firebase app already exists to prevent re-initialization errors
-    if (!getApps().length) {
-      app = initializeApp(firebaseConfig);
-    } else {
-      app = getApp(); // Use the existing app
-    }
-    
-    const firestoreDb = getFirestore(app);
-    const firebaseAuth = getAuth(app);
-
-    setDb(firestoreDb);
-    setAuth(firebaseAuth);
-
-    const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
-      if (user) {
-        setUserId(user.uid);
-      } else {
-        // Sign in anonymously if no user is authenticated
-        try {
-          if (typeof __initial_auth_token !== 'undefined') {
-            await signInWithCustomToken(firebaseAuth, __initial_auth_token);
-          } else {
-            await signInAnonymously(firebaseAuth);
-          }
-        } catch (error) {
-          console.error("Firebase authentication error:", error);
-          setUserId(crypto.randomUUID()); // Fallback to a random ID if auth fails
-        }
-      }
-    });
-
-    return () => unsubscribe(); // Cleanup auth listener on component unmount
-  }, []);
-
 
   useEffect(() => {
     const handleScroll = () => {
@@ -175,35 +126,12 @@ const Index = () => {
     setIsMenuOpen(false);
   };
 
-  // Function to handle email submission and store in Firestore
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+  // Placeholder for email submission (no Firebase storage)
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!db || !userId) {
-      console.error("Firestore or User ID not initialized.");
-      // Using a custom modal for user feedback instead of alert
-      alert("Error: Database not ready. Please try again.");
-      return;
-    }
-
-    try {
-      const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-      const newsletterCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/newsletter_subscribers`);
-      
-      await addDoc(newsletterCollectionRef, {
-        email: email,
-        timestamp: new Date(),
-        userId: userId // Store userId with the email
-      });
-      console.log("Email subscribed successfully:", email);
-      // Using a custom modal for user feedback instead of alert
-      alert(`Thank you for subscribing, ${email}!`);
-      setEmail(""); // Clear the input field
-    } catch (error) {
-      console.error("Error subscribing email:", error);
-      // Using a custom modal for user feedback instead of alert
-      alert("Failed to subscribe. Please try again.");
-    }
+    console.log("Captured email:", email);
+    alert(`Thank you for subscribing, ${email}!`); // Using alert for demonstration
+    setEmail(""); // Clear the input field
   };
 
   const services = [
