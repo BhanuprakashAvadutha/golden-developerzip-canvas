@@ -6,6 +6,8 @@ import { AskQuestionModal } from "@/components/AskQuestionModal";
 import { ConsultationModal } from "@/components/ConsultationModal";
 import OfferModal from "@/components/OfferModal";
 import AIChatbot from "@/components/AIChatbot";
+import ContactForm from "@/components/ContactForm";
+import AboutUs from "@/components/AboutUs";
 import { 
   Globe, 
   Database, 
@@ -23,7 +25,9 @@ import {
   Code,
   Users,
   TrendingUp,
-  ChevronDown
+  ChevronDown,
+  MapPin,
+  Phone
 } from "lucide-react";
 
 // Import portfolio images
@@ -44,7 +48,7 @@ const Index = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["home", "services", "platforms", "portfolio", "pricing"];
+      const sections = ["home", "about", "services", "platforms", "portfolio", "pricing", "contact"];
       const current = sections.find(section => {
         const element = document.getElementById(section);
         if (element) {
@@ -219,6 +223,7 @@ const Index = () => {
             <div className="hidden md:flex items-center space-x-8">
               {[
                 { name: "Home", id: "home" },
+                { name: "About", id: "about" },
                 { name: "Services", id: "services" },
                 { name: "Ask", id: "ask" },
                 { name: "Platforms", id: "platforms" },
@@ -265,6 +270,7 @@ const Index = () => {
               <div className="px-2 pt-2 pb-3 space-y-1">
                 {[
                   { name: "Home", id: "home" },
+                  { name: "About", id: "about" },
                   { name: "Services", id: "services" },
                   { name: "Ask", id: "ask" },
                   { name: "Platforms", id: "platforms" },
@@ -339,6 +345,9 @@ const Index = () => {
           <ChevronDown className="h-6 w-6 text-primary" />
         </div>
       </section>
+
+      {/* About Us Section */}
+      <AboutUs />
 
       {/* Services Section */}
       <section id="services" className="py-20 bg-card/5">
@@ -560,40 +569,76 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Contact Form Section */}
+      <ContactForm />
+
       {/* Footer */}
-      <footer id="contact" className="bg-background border-t border-border py-12">
+      <footer className="bg-background border-t border-border py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <div className="h-8 w-8 bg-gradient-gold rounded-lg flex items-center justify-center">
-                <Zap className="h-5 w-5 text-charcoal" />
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Company Info */}
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="h-8 w-8 bg-gradient-gold rounded-lg flex items-center justify-center">
+                  <Zap className="h-5 w-5 text-charcoal" />
+                </div>
+                <span className="text-xl font-display font-bold text-foreground">
+                  DeveloperZip
+                </span>
               </div>
-              <span className="text-2xl font-display font-bold text-foreground">
-                DeveloperZip
-              </span>
+              <p className="text-muted-foreground mb-4 text-sm">
+                Creative web development agency specializing in modern, responsive websites and intuitive user experiences.
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Built by Interns. Powered by DeveloperZip.
+              </p>
             </div>
-            <p className="text-muted-foreground mb-6">
-              Built by Interns. Powered by DeveloperZip.
-            </p>
-            
-            <div className="flex justify-center gap-6 mb-6">
-              {[
-                { icon: Users, label: "Community" },
-                { icon: MessageSquare, label: "Support" },
-                { icon: Mail, label: "Contact" }
-              ].map((social, index) => (
-                <button
-                  key={social.label}
-                  className="p-3 rounded-lg bg-card hover:bg-primary/10 transition-colors group"
-                >
-                  <social.icon className="h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
-                </button>
-              ))}
+
+            {/* Contact Info */}
+            <div>
+              <h4 className="font-semibold text-foreground mb-4">Contact Information</h4>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-start gap-2">
+                  <MapPin className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-muted-foreground">123 Tech Street, Srikakulam, Andhra Pradesh, India</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span className="text-muted-foreground">+91-9876543210</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-primary flex-shrink-0" />
+                  <span className="text-muted-foreground">support@developerzip.com</span>
+                </div>
+              </div>
             </div>
-            
-            <div className="pt-6 border-t border-border text-sm text-muted-foreground">
-              © 2024 DeveloperZip. All rights reserved. Built with ❤️ and ⚡
+
+            {/* Quick Links */}
+            <div>
+              <h4 className="font-semibold text-foreground mb-4">Quick Links</h4>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                {[
+                  { name: "About", id: "about" },
+                  { name: "Services", id: "services" },
+                  { name: "Portfolio", id: "portfolio" },
+                  { name: "Pricing", id: "pricing" },
+                  { name: "Contact", id: "contact" },
+                  { name: "Home", id: "home" }
+                ].map((link) => (
+                  <button
+                    key={link.id}
+                    onClick={() => scrollToSection(link.id)}
+                    className="text-left text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {link.name}
+                  </button>
+                ))}
+              </div>
             </div>
+          </div>
+          
+          <div className="mt-8 pt-6 border-t border-border text-center text-sm text-muted-foreground">
+            © 2024 DeveloperZip. All rights reserved. Built with ❤️ and ⚡
           </div>
         </div>
       </footer>
