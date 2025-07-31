@@ -6,8 +6,8 @@ import { AskQuestionModal } from "@/components/AskQuestionModal";
 import { ConsultationModal } from "@/components/ConsultationModal";
 import OfferModal from "@/components/OfferModal";
 import AIChatbot from "@/components/AIChatbot";
-import ContactForm from "@/components/ContactForm";
 import AboutUs from "@/components/AboutUs";
+import ContactForm from "@/components/ContactForm";
 import { 
   Globe, 
   Database, 
