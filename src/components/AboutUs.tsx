@@ -29,9 +29,9 @@ const AboutUs = () => {
   ];
 
   const stats = [
-    { number: "50+", label: "Projects Completed" },
+    { number: "50+", label: "Projects " },
     { number: "25+", label: "Happy Clients" },
-    { number: "3+", label: "Years Experience" },
+    { number: "24/7", label: "Support & Service" },
     { number: "100%", label: "Client Satisfaction" }
   ];
 
