@@ -46,6 +46,8 @@ const Index = () => {
   const [showConsultationModal, setShowConsultationModal] = useState(false);
   const [showOfferModal, setShowOfferModal] = useState(false);
   const [offerShown, setOfferShown] = useState(false);
+  // State to control the visibility of the survey popup
+  const [showSurveyPopup, setShowSurveyPopup] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -86,6 +88,15 @@ const Index = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [showOfferModal, offerShown]);
+
+  // Show survey popup after 20 seconds
+  useEffect(() => {
+    const surveyTimer = setTimeout(() => {
+      setShowSurveyPopup(true);
+    }, 20000); // 20 seconds
+
+    return () => clearTimeout(surveyTimer);
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -546,15 +557,6 @@ const Index = () => {
                     <p className="text-sm text-muted-foreground">{plan.description}</p>
                   </div>
 
-                  <ul className="space-y-3 mb-6">
-                    {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center gap-3">
-                        <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                        <span className="text-sm text-foreground">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-
                   <AskQuestionModal>
                     <Button 
                       variant={plan.popular ? "premium" : "premium-outline"} 
@@ -662,6 +664,32 @@ const Index = () => {
 
       {/* AI Chatbot */}
       <AIChatbot />
+
+      {/* Survey Popup */}
+      {showSurveyPopup && (
+        <div className="fixed bottom-4 right-4 z-[70] animate-fade-in-up">
+          <Card className="p-2 border-none shadow-lg bg-card/90 backdrop-blur-sm">
+            <CardContent className="p-0">
+              <button 
+                onClick={() => setShowSurveyPopup(false)} 
+                className="absolute top-1 right-1 bg-white rounded-full p-1 text-gray-600 hover:text-gray-900 transition-colors"
+                aria-label="Close survey popup"
+              >
+                <X className="h-4 w-4" />
+              </button>
+              <img 
+                src="/survey.png" 
+                alt="Survey Popup" 
+                className="w-48 h-auto rounded-md" 
+                onError={(e) => {
+                  e.currentTarget.onerror = null; // prevents infinite loop
+                  e.currentTarget.src = "https://placehold.co/192x192/E0E0E0/333333?text=Survey"; // Placeholder
+                }}
+              />
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };
