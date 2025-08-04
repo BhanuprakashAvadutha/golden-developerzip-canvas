@@ -46,6 +46,7 @@ const Index = () => {
   const [showConsultationModal, setShowConsultationModal] = useState(false);
   const [showOfferModal, setShowOfferModal] = useState(false);
   const [offerShown, setOfferShown] = useState(false);
+  const [showBannerPopup, setShowBannerPopup] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -74,9 +75,9 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Show offer modal on scroll (only once)
+   // Show offer modal on scroll (only once)
   useEffect(() => {
-    const handleScroll = () => {
+     const handleScroll = () => {
       if (window.scrollY > 200 && !showOfferModal && !offerShown) {
         setShowOfferModal(true);
         setOfferShown(true);
@@ -86,6 +87,15 @@ const Index = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [showOfferModal, offerShown]);
+
+  // Show banner popup after 40 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowBannerPopup(true);
+    }, 40000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -654,11 +664,31 @@ const Index = () => {
       />
 
       {/* Offer Modal */}
-        <OfferModal 
-          isOpen={showOfferModal} 
-          onClose={() => setShowOfferModal(false)}
-          consultationModalOpen={showConsultationModal}
-        />
+      <OfferModal 
+        isOpen={showOfferModal} 
+        onClose={() => setShowOfferModal(false)}
+      />
+
+      {/* Banner Popup after 40 seconds */}
+      {showBannerPopup && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-[100] animate-slide-in-down">
+          <div className="bg-gradient-gold text-charcoal px-6 py-4 rounded-lg shadow-premium max-w-md mx-auto">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Sparkles className="h-5 w-5" />
+                <span className="font-semibold">Special Offer!</span>
+              </div>
+              <button
+                onClick={() => setShowBannerPopup(false)}
+                className="text-charcoal/70 hover:text-charcoal transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <p className="text-sm mt-2">Get 30% OFF on all development services today!</p>
+          </div>
+        </div>
+      )}
 
       {/* AI Chatbot */}
       <AIChatbot />
