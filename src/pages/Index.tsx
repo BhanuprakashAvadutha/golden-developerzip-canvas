@@ -673,7 +673,7 @@ const Index = () => {
       {showBannerPopup && (
         <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-[100] animate-slide-in-down">
           <div className="bg-gradient-gold text-charcoal px-6 py-4 rounded-lg shadow-premium max-w-md mx-auto">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
                 <Sparkles className="h-5 w-5" />
                 <span className="font-semibold">Special Offer!</span>
@@ -685,7 +685,18 @@ const Index = () => {
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <p className="text-sm mt-2">Get 30% OFF on all development services today!</p>
+            
+            <div className="flex items-center gap-4">
+              <img
+                src={heartwarmingScene}
+                alt="Special Offer"
+                className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+              />
+              <div>
+                <p className="text-sm font-medium">Get 30% OFF on all development services today!</p>
+                <p className="text-xs text-charcoal/80 mt-1">Limited time offer - Don't miss out!</p>
+              </div>
+            </div>
           </div>
         </div>
       )}
