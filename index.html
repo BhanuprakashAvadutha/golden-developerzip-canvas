@@ -19,7 +19,7 @@
     <meta name="author" content="DeveloperZip" />
     <meta name="keywords" content="web development, responsive design, automation, React, TypeScript, Firebase, Supabase, SEO, digital solutions" />
 
-    <!-- ✅ Google Site Verification -->
+    <!-- Google Site Verification -->
     <meta name="google-site-verification" content="2LEQiLi5_oR2nLnib64opk_opZb7y5w9irlvRo7yoIE" />
 
     <!-- Favicon -->
@@ -45,10 +45,10 @@
     <meta name="twitter:description" content="Smart tools, freelance solutions, and automation under one brand." />
     <meta name="twitter:image" content="/cover.png" />
 
-    <!-- ✅ Capture inbound UTM parameters -->
+    <!-- ✅ Robust UTM Capture Script -->
     <script>
       (function() {
-        function captureUTM() {
+        try {
           const params = new URLSearchParams(window.location.search);
           const utmSource = params.get("utm_source");
           const utmMedium = params.get("utm_medium");
@@ -58,17 +58,16 @@
           if (utmMedium) localStorage.setItem("utm_medium", utmMedium);
           if (utmCampaign) localStorage.setItem("utm_campaign", utmCampaign);
 
-          // Push into GTM dataLayer too
-          if (window.dataLayer) {
-            window.dataLayer.push({
-              event: "utm_event",
-              utm_source: utmSource || localStorage.getItem("utm_source"),
-              utm_medium: utmMedium || localStorage.getItem("utm_medium"),
-              utm_campaign: utmCampaign || localStorage.getItem("utm_campaign")
-            });
-          }
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({
+            event: "utm_event",
+            utm_source: utmSource || localStorage.getItem("utm_source"),
+            utm_medium: utmMedium || localStorage.getItem("utm_medium"),
+            utm_campaign: utmCampaign || localStorage.getItem("utm_campaign")
+          });
+        } catch(e) {
+          console.warn("UTM capture failed:", e);
         }
-        captureUTM();
       })();
     </script>
   </head>
@@ -107,7 +106,6 @@
 
             e.preventDefault();
 
-            // ✅ Use captured values if available
             var utm_source = localStorage.getItem("utm_source") || 'developerzip';
             var utm_medium = localStorage.getItem("utm_medium") || 'referral';
             var utm_campaign = localStorage.getItem("utm_campaign") || 'outbound_click';
@@ -125,7 +123,7 @@
               window.location.href = newUrl;
             }
           } catch(err){
-            return;
+            console.warn("UTM append failed:", err);
           }
         }
 
