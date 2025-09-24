@@ -2,12 +2,15 @@
 <html lang="en">
   <head>
     <!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-MD5BXMMZ');</script>
-<!-- End Google Tag Manager -->
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-MD5BXMMZ');
+    </script>
+    <!-- End Google Tag Manager -->
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -22,15 +25,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <!-- Favicon -->
     <link rel="icon" href="/src/assets/developerzip-icon.png" type="image/png">
     <link rel="apple-touch-icon" href="/src/assets/developerzip-icon.png">
-
-    
-    <!-- Google Tag Manager -->
-    <!-- <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-TB8CZCSM');</script> -->
-    <!-- End Google Tag Manager -->
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -50,13 +44,100 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <meta name="twitter:title" content="DeveloperZip - Ask. Build. Automate." />
     <meta name="twitter:description" content="Smart tools, freelance solutions, and automation under one brand." />
     <meta name="twitter:image" content="/cover.png" />
+
+    <!-- ✅ Capture inbound UTM parameters -->
+    <script>
+      (function() {
+        function captureUTM() {
+          const params = new URLSearchParams(window.location.search);
+          const utmSource = params.get("utm_source");
+          const utmMedium = params.get("utm_medium");
+          const utmCampaign = params.get("utm_campaign");
+
+          if (utmSource) localStorage.setItem("utm_source", utmSource);
+          if (utmMedium) localStorage.setItem("utm_medium", utmMedium);
+          if (utmCampaign) localStorage.setItem("utm_campaign", utmCampaign);
+
+          // Push into GTM dataLayer too
+          if (window.dataLayer) {
+            window.dataLayer.push({
+              event: "utm_event",
+              utm_source: utmSource || localStorage.getItem("utm_source"),
+              utm_medium: utmMedium || localStorage.getItem("utm_medium"),
+              utm_campaign: utmCampaign || localStorage.getItem("utm_campaign")
+            });
+          }
+        }
+        captureUTM();
+      })();
+    </script>
   </head>
 
   <body>
     <!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MD5BXMMZ"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MD5BXMMZ"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <!-- ✅ Script to auto-append UTM parameters on outbound links -->
+    <script>
+      (function(){
+        function shouldIgnoreHref(href){
+          if(!href) return true;
+          if(href.indexOf('#') === 0) return true;
+          if(href.indexOf('mailto:') === 0) return true;
+          if(href.indexOf('tel:') === 0) return true;
+          if(href.indexOf('javascript:') === 0) return true;
+          return false;
+        }
+
+        function appendUtmAndNavigate(e){
+          try {
+            var a = e.target.closest('a');
+            if(!a) return;
+            var href = a.getAttribute('href') || '';
+            if(shouldIgnoreHref(href)) return;
+            if(!/^https?:\/\//i.test(href)) return;
+            if(href.indexOf('utm_') !== -1) return;
+
+            var linkUrl = new URL(href, location.href);
+            if (linkUrl.hostname === location.hostname) return;
+
+            e.preventDefault();
+
+            // ✅ Use captured values if available
+            var utm_source = localStorage.getItem("utm_source") || 'developerzip';
+            var utm_medium = localStorage.getItem("utm_medium") || 'referral';
+            var utm_campaign = localStorage.getItem("utm_campaign") || 'outbound_click';
+
+            var params = 'utm_source=' + encodeURIComponent(utm_source) +
+                        '&utm_medium=' + encodeURIComponent(utm_medium) +
+                        '&utm_campaign=' + encodeURIComponent(utm_campaign);
+
+            var sep = href.indexOf('?') === -1 ? '?' : '&';
+            var newUrl = href + sep + params;
+
+            if (a.target && a.target.toLowerCase()==='_blank') {
+              window.open(newUrl, '_blank');
+            } else {
+              window.location.href = newUrl;
+            }
+          } catch(err){
+            return;
+          }
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', function(){ 
+            document.addEventListener('click', appendUtmAndNavigate, true); 
+          });
+        } else {
+          document.addEventListener('click', appendUtmAndNavigate, true);
+        }
+      })();
+    </script>
 
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
